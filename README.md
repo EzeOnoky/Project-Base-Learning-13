@@ -1,10 +1,6 @@
 # Project-Base-Learning-13
 ANSIBLE DYNAMIC ASSIGNMENTS (INCLUDE) AND COMMUNITY ROLES
 
-# Project-Base-Learning-12
-
-ANSIBLE REFACTORING AND STATIC ASSIGNMENTS (IMPORTS AND ROLES)
-
 ## PROJECT TASK
 
 - In this project we will introduce **dynamic assignments** by using Ansible **include** module. Our target is to use Ansible configuration management tool to prepare UAT environment for Tooling web solution.
