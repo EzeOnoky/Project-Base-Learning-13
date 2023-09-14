@@ -123,4 +123,30 @@ Update site.yml file to make use of the dynamic assignment with the snippet belo
   import_playbook: ../static-assignments/webservers.yml
 ```
 
-### 2A   - COMMUNITY ROLES
+## 2A   - Download Mysql Ansible Role from Community Roles
+
+Now it is time to create a role for MySQL database – it should install the MySQL package, create a database and configure users. To avoid manually doing all these, we can download and install open-source roles. These roles are actually production ready, and dynamic to accomodate most of Linux flavours. With Ansible Galaxy again, we can simply download a ready to use ansible role, and keep going.
+
+The community roles can be found [here](https://galaxy.ansible.com/home), for this project, we will be using MySQL role developed by [geerlingguy](https://galaxy.ansible.com/geerlingguy/mysql)
+
+To preserve your your GitHub in actual state after you install a new role – make a commit and push to master - ‘ansible-config-mgt’ directory. Of course you must have git installed and configured on Jenkins-Ansible server and, for more convenient work with codes, you can configure Visual Studio Code to work with this directory. In this case, you will no longer need webhook and Jenkins jobs to update your codes on Jenkins-Ansible server, so you can disable it – we will be using Jenkins later for a better purpose.
+
+Using below, We have to install git on Jenkins-Ansible server and then configure Visual Studio Code to work with this directory. 
+
+```
+git init
+git pull https://github.com/EzeOnoky/ansible-config-mgt
+git remote add origin https://github.com/EzeOnoky/ansible-config-mgt
+git branch roles-feature
+git switch roles-feature
+git status
+```
+
+# 13_2 success execution of above
+
+So for now, Jenkins jobs and webhook will no longer be needed in this project.
+
+Before you continue you download of from the Ansible galaxy server, ensure to confirm you are on the new `fole-feature` branch, by running `git status`
+
+
+
