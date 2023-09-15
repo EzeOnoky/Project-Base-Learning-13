@@ -83,6 +83,8 @@ Now paste the instruction below into the **env-vars.yml** file.
         - always
 ```
 
+# 13_3 shwoing above
+
 N/B: We used **include_vars** module instead of **include**. This is because Ansible developers decided to separate different features of the module. From Ansible version 2.8, the include module is deprecated and variants of include*_ must be used. These are:
 
 - include_role
@@ -123,15 +125,17 @@ Update site.yml file to make use of the dynamic assignment with the snippet belo
   import_playbook: ../static-assignments/webservers.yml
 ```
 
-## 2A   - Download Mysql Ansible Role from Community Roles
+Above Explained...
+
+### 2A   - Download Mysql Ansible Role from Community Roles
 
 Now it is time to create a role for MySQL database – it should install the MySQL package, create a database and configure users. To avoid manually doing all these, we can download and install open-source roles. These roles are actually production ready, and dynamic to accomodate most of Linux flavours. With Ansible Galaxy again, we can simply download a ready to use ansible role, and keep going.
 
 The community roles can be found [here](https://galaxy.ansible.com/home), for this project, we will be using MySQL role developed by [geerlingguy](https://galaxy.ansible.com/geerlingguy/mysql)
 
-To preserve your your GitHub in actual state after you install a new role – make a commit and push to master - ‘ansible-config-mgt’ directory. Of course you must have git installed and configured on Jenkins-Ansible server and, for more convenient work with codes, you can configure Visual Studio Code to work with this directory. In this case, you will no longer need webhook and Jenkins jobs to update your codes on Jenkins-Ansible server, so you can disable it – we will be using Jenkins later for a better purpose.
+To preserve your GitHub in actual state after you install a new role – make a commit and push to master - ‘ansible-config-mgt’ directory. Of course you must have git installed and configured on Jenkins-Ansible server and, for more convenient work with codes, you can configure Visual Studio Code to work with this directory. In this case, you will no longer need webhook and Jenkins jobs to update your codes on Jenkins-Ansible server, so you can disable it – we will be using Jenkins later for a better purpose.
 
-Using below, We have to install git on Jenkins-Ansible server and then configure Visual Studio Code to work with this directory. 
+Using below, We have to install git on Jenkins-Ansible server and then configure Visual Studio Code to work with this directory. Below tragets to create a new branch - **roles-feature** while connected to **ansible-config-mgt** directory
 
 ```
 git init
@@ -146,7 +150,159 @@ git status
 
 So for now, Jenkins jobs and webhook will no longer be needed in this project.
 
-Before you continue you download of from the Ansible galaxy server, ensure to confirm you are on the new `fole-feature` branch, by running `git status`
+Before you continue you download of from the Ansible galaxy server, confirm you are on the new `roles-feature` branch, by running `git status`
+
+cd into roles directory, 
+Create the Mysql role(recall in project 12, `ansible-galaxy init webserver` was used to create a role - webserver ...with the init command)
+Rename the folder(geerlingguy.mysql) to mysql
+
+```
+cd roles
+ansible-galaxy init geerlingguy.mysql
+mv geerlinguy.mysql/ mysql
+```
+
+# 13_3 success execution of above
+
+Read **README.md** file and edit roles configuration to use correct credentials for MySQL required for the tooling website, Edit the **defaults/main.yml** in the **mysql** role
+
+# 13_4 refer to Solo pictures
+
+Create a **db.yml** file in the **static assignment** that will point to the **mysql** role
+
+# 13_5 refer to Solo pictures
+
+```
+git status
+git add .
+git commit -m "updated geerlinguy mysql role"
+git push --set-upstream origin roles-feature
+```
+
+Make a commit and push the roles-feature branch and merge to main branch.
+
+# 13_6 refer to Solo pictures
+
+On the GITHUB repo, Create a **pull request** and merge to the **main** branch if we are satisfied with your codes.
 
 
+## STEP 3 -  LOAD BALANCER ROLES
 
+### 3A   - Download NGINX & APACHE Community Roles from Ansible Galaxy Server
+
+We want to be able to choose which Load Balancer to use, **Nginx** or **Apache**, so we need to have two roles respectively:
+
+- Nginx
+- Apache
+
+To proceed in creating the Ansible **role**, we can decide to either develop our own roles, or find available roles from the Ansible Galaxy community. To make life easy, we will create **roles** for *Nginx* and *Apache* from the community roles, as earlier mentioned, we will download ready to use community roles from **geerlingguy** on Ansible Galaxy Server.
+
+Check [here](https://galaxy.ansible.com/geerlingguy) , search and Copy the link for the *Nginx* and *Apache* roles. 
+
+# 13_7 Showing geerlingguy site - refer solo pix
+
+Ensure you create the roles in the **roles** directory...Rename the newly download roles to **Nginx** and **Apache** respectively.
+
+```
+cd roles
+ansible-galaxy install geerlingguy.nginx
+ansible-galaxy install geerlingguy.apache
+mv geerlingguy.nginx/ nginx
+mv geerlingguy.apache/ apache
+```
+
+# 13_7 Showing successful execution - refer solo pix
+
+### 3B - Update static-assignment and site.yml files to refer the downloaded roles
+
+- 1 : Since you cannot use both Nginx and Apache load balancer, you need to add a condition to enable either one – this is where you can make use of variables.
+
+- 2 : Declare a variable in **defaults/main.yml** file inside the Nginx and Apache roles. Name each variables **enable_nginx_lb** and **enable_apache_lb** respectively.
+
+- 3 : Set both values to false like this `enable_nginx_lb: false` and `enable_apache_lb: false`
+
+- 4 : Declare another variable in both roles `load_balancer_is_required` and set its value to false as well
+
+- 5 : Update both assignment and site.yml files respectively
+
+```
+enable_nginx_lb: false
+load_balancer_is_required: false
+
+enable_apache_lb: false
+load_balancer_is_required: false
+```
+
+# 13_8 Showing successful execution for both NGINX & APACHE - refer solo pix
+
+
+Edit the defaults/main.yml files
+
+# 13_9 - refer solo pix to understand
+
+In the **static assignments** directory, create a file **loadbalancers.yml** file, Paste the snippet below in the **loadbalancers.yml** file
+
+```
+- hosts: lb
+  roles:
+    - { role: nginx, when: enable_nginx_lb and load_balancer_is_required }
+    - { role: apache, when: enable_apache_lb and load_balancer_is_required }
+```
+
+# 13_10 - pix showing above is done, refer solo pix to understand
+
+
+Then update the **playbooks/sites.yml** file with below snippet
+
+```
+- name: Loadbalancers assignment
+    - import_playbook: ../static-assignments/loadbalancers.yml
+      when: load_balancer_is_required
+```
+
+# 13_11 - pix showing above is done, refer solo pix to understand
+
+Now we can make use of **env-vars\uat.yml** file to define which loadbalancer to use in UAT environment by setting respective environmental variable to true.
+
+You will activate load balancer, and enable nginx by setting these in the respective environment’s env-vars file.
+
+```
+enable_nginx_lb: true
+load_balancer_is_required: true
+```
+
+The same must work with apache LB, so you can switch it by setting respective environmental variable to **true** and other to **false**
+
+# 13_12 - pix showing above is done, refer solo pix to understand
+
+Then we update the **inventory/uat.yml**
+
+# 13_13 - pix showing above is done, refer solo pix to understand
+
+Check if the ansible can access the inventory
+
+`ansible all -m ping -i inventory/uat.yml`
+
+# 13_13 - pix showing above is done, refer solo pix to understand
+
+
+Push the **dynamic assignment** branch and merge
+
+```
+git status
+git add .
+git comit -m "add env-vars,dynamic assignments and update site.yml"
+git push origin dynamic-assignment
+```
+
+# 13_14 - pix showing above is done, refer solo pix to understand
+
+Creat a pull request and then merge
+
+Now we can run the Playbook
+
+`ansible-playbook playbooks/site.yml -i inventory/uat.yml`
+
+Now try accessing the tooling web page....
+
+# Congratulation EZE, you have -----
