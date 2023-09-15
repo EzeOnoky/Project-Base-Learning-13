@@ -44,13 +44,15 @@ In most cases it is recommended to use static assignments for playbooks, because
 
 ## STEP 1 - INTRODUCING DYNAMIC ASSIGNMENT INTO OUR STRUCTURE
 
-Create a new directory and name it **dynamic-assignments**. Then inside this directory, create a new file **env-vars.yml**. We will instruct **site.yml** to **include** this playbook later. For now, let us keep building up the structure.
+In your https://github.com//ansible-config-mgt GitHub repository, start a new branch and call it **dynamic-assignments**.
 
 ```
 git status
 git pull
 git checkout -b dynamic-assignment
 ```
+
+Then while on the new branch, proceed to create a new directory and name it **dynamic-assignments**. While inside this directory, create a new file **env-vars.yml**. We will instruct **site.yml** to **include** this playbook later. For now, let us keep building up the structure.
 
 We will be using the same Ansible to configure multiple environments and each of these environments will have certain unique attributes, such as servername and ip-address etc. We will set values to variables per specific environment.
 
@@ -273,6 +275,8 @@ load_balancer_is_required: true
 
 The same must work with apache LB, so you can switch it by setting respective environmental variable to **true** and other to **false**
 
+Now when the nginx server is set to run, it skips all the plays on apache server and vice versa. We are using the same port address, port 80, so remember to stop the service of either nginx when you want to run apache load balancer and vice versa.
+
 # 13_12 - pix showing above is done, refer solo pix to understand
 
 Then we update the **inventory/uat.yml**
@@ -299,10 +303,27 @@ git push origin dynamic-assignment
 
 Creat a pull request and then merge
 
-Now we can run the Playbook
+Now we can run the Playbook ...skipping apache
 
 `ansible-playbook playbooks/site.yml -i inventory/uat.yml`
 
-Now try accessing the tooling web page....
+# 13_15 - pix showing above is done, 
+
+Notice how it skips all apache2 plays, this is because nginx load balancer is activated.
+
+
+Now we can run the Playbook ...skipping nginx
+
+`ansible-playbook playbooks/site.yml -i inventory/uat.yml`
+
+# 13_16 - pix showing above is done, 
+
+Notice how it skips all nginx plays, this is because apache2 load balancer is activated.
+
+
+
+
+
+In both scenarios, the web server was reachable on same port because i always stopped the service first on the play before i switched to a new service
 
 # Congratulation EZE, you have -----
