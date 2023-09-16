@@ -62,7 +62,6 @@ For this reason, we will now create a folder to keep each environment’s variab
 
 Below is how my layout  now look like...
 
-# 13_2
 
 Now paste the instruction below into the **env-vars.yml** file.
 
@@ -85,7 +84,8 @@ Now paste the instruction below into the **env-vars.yml** file.
         - always
 ```
 
-# 13_3 shwoing above
+![13_2](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/419d6882-2b77-490b-9edf-d59eb74cada8)
+
 
 N/B: We used **include_vars** module instead of **include**. This is because Ansible developers decided to separate different features of the module. From Ansible version 2.8, the include module is deprecated and variants of include*_ must be used. These are:
 
