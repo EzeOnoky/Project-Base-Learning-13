@@ -44,7 +44,7 @@ In most cases it is recommended to use static assignments for playbooks, because
 
 ## STEP 1 - INTRODUCING DYNAMIC ASSIGNMENT INTO OUR STRUCTURE
 
-In your https://github.com//ansible-config-mgt GitHub repository, start a new branch and call it **dynamic-assignments**.
+On AWS, Start your Ansible-Jenkins server(from previous project 12). SSH into the server using VS Code IDE. In your https://github.com//ansible-config-mgt GitHub repository, start a new branch and call it **dynamic-assignments**.
 
 ```
 git status
