@@ -141,6 +141,7 @@ Using below, We have to install git on Jenkins-Ansible server and then configure
 
 ```
 git init
+git --version
 git pull https://github.com/EzeOnoky/ansible-config-mgt
 git remote add origin https://github.com/EzeOnoky/ansible-config-mgt
 git branch roles-feature
@@ -152,27 +153,32 @@ git status
 
 So for now, Jenkins jobs and webhook will no longer be needed in this project.
 
-Before you continue you download of from the Ansible galaxy server, confirm you are on the new `roles-feature` branch, by running `git status`
+Before we continue the download of from the Ansible galaxy server, confirm you are on the new `roles-feature` branch, by running `git status`
 
 cd into roles directory, 
 Create the Mysql role(recall in project 12, `ansible-galaxy init webserver` was used to create a role - webserver ...with the init command)
 Rename the folder(geerlingguy.mysql) to mysql
 
 ```
+git status
 cd roles
-ansible-galaxy init geerlingguy.mysql
+ls
+ansible-galaxy install geerlingguy.mysql
 mv geerlinguy.mysql/ mysql
+ls
 ```
 
 # 13_3 success execution of above
 
 Read **README.md** file and edit roles configuration to use correct credentials for MySQL required for the tooling website, Edit the **defaults/main.yml** in the **mysql** role
 
-# 13_4 refer to Solo pictures
+# 13_4 refer to kebe/solo pictures
 
 Create a **db.yml** file in the **static assignment** that will point to the **mysql** role
 
 # 13_5 refer to Solo pictures
+
+Now it is time to upload the changes into your GitHub
 
 ```
 git status
@@ -197,6 +203,8 @@ We want to be able to choose which Load Balancer to use, **Nginx** or **Apache**
 - Nginx
 - Apache
 
+Since you cannot use both Nginx and Apache load balancer, you need to add a condition to enable either one – *this is where you can make use of* **variables**
+
 To proceed in creating the Ansible **role**, we can decide to either develop our own roles, or find available roles from the Ansible Galaxy community. To make life easy, we will create **roles** for *Nginx* and *Apache* from the community roles, as earlier mentioned, we will download ready to use community roles from **geerlingguy** on Ansible Galaxy Server.
 
 Check [here](https://galaxy.ansible.com/geerlingguy) , search and Copy the link for the *Nginx* and *Apache* roles. 
@@ -215,18 +223,20 @@ mv geerlingguy.apache/ apache
 
 # 13_7 Showing successful execution - refer solo pix
 
-### 3B - Update static-assignment and site.yml files to refer the downloaded roles
+### 3B - Introduce Variables, Update static-assignment and site.yml files to refer the downloaded roles
 
-- 1 : Since you cannot use both Nginx and Apache load balancer, you need to add a condition to enable either one – this is where you can make use of variables.
+- 3B_1 : Since you cannot use both Nginx and Apache load balancer, you need to add a condition to enable either one – this is where you can make use of **variables**
 
-- 2 : Declare a variable in **defaults/main.yml** file inside the Nginx and Apache roles. Name each variables **enable_nginx_lb** and **enable_apache_lb** respectively.
+- 3B_2 : Inside the new Nginx and Apache roles, declare a variable in **defaults/main.yml** file . Name each variables **enable_nginx_lb** and **enable_apache_lb** respectively.
 
-- 3 : Set both values to false like this `enable_nginx_lb: false` and `enable_apache_lb: false`
+- 3B_3 : Set both values to false like this `enable_nginx_lb: false` and `enable_apache_lb: false`
 
-- 4 : Declare another variable in both roles `load_balancer_is_required` and set its value to false as well
+- 3B_4 : Declare another variable in both roles `load_balancer_is_required` and set its value to false as well
 
-- 5 : Update both assignment and site.yml files respectively
+- 3B_5 : Update both assignment and site.yml files respectively
 
+
+**3B_2, 3B_3, 3B_4, 3B_5 executed**
 ```
 enable_nginx_lb: false
 load_balancer_is_required: false
@@ -238,9 +248,11 @@ load_balancer_is_required: false
 # 13_8 Showing successful execution for both NGINX & APACHE - refer solo pix
 
 
-Edit the defaults/main.yml files
+Also edit the defaults/main.yml files to capture private IP address of WEB1 & WEB2
 
-# 13_9 - refer solo pix to understand
+# 13_9 - refer solo/KEBE pix to understand
+
+Now we proceed to update both `static-assignments` directory with a new file - **loadbalancers.yml** and also update the `site.yml` files respectively
 
 In the **static assignments** directory, create a file **loadbalancers.yml** file, Paste the snippet below in the **loadbalancers.yml** file
 
@@ -253,6 +265,7 @@ In the **static assignments** directory, create a file **loadbalancers.yml** fil
 
 # 13_10 - pix showing above is done, refer solo pix to understand
 
+As seen above, with the `when` condition, It is used to decide the nature of load balancer installed in an environment depending on which variables is set to true. Recall the variables introduced in **3B_2** above.
 
 Then update the **playbooks/sites.yml** file with below snippet
 
@@ -262,22 +275,23 @@ Then update the **playbooks/sites.yml** file with below snippet
       when: load_balancer_is_required
 ```
 
-# 13_11 - pix showing above is done, refer solo pix to understand
+# 13_11 - pix showing above is done, refer solo/kebe pix to understand
 
-Now we can make use of **env-vars\uat.yml** file to define which loadbalancer to use in UAT environment by setting respective environmental variable to true.
+Now you can make use of **env-vars\uat.yml** file to define which loadbalancer to use in UAT environment by setting respective environmental variable to `true`
 
-You will activate load balancer, and enable nginx by setting these in the respective environment’s env-vars file.
+You will activate load balancer, and enable nginx by setting these in the respective environment’s `env-vars` file.
 
 ```
 enable_nginx_lb: true
 load_balancer_is_required: true
 ```
 
+# 13_12 - pix showing above is done, refer Kebe pix to understand
+
 The same must work with apache LB, so you can switch it by setting respective environmental variable to **true** and other to **false**
 
 Now when the nginx server is set to run, it skips all the plays on apache server and vice versa. We are using the same port address, port 80, so remember to stop the service of either nginx when you want to run apache load balancer and vice versa.
 
-# 13_12 - pix showing above is done, refer solo pix to understand
 
 Then we update the **inventory/uat.yml**
 
