@@ -46,13 +46,17 @@ In most cases it is recommended to use static assignments for playbooks, because
 
 On AWS, Start your Ansible-Jenkins server(from previous project 12). SSH into the server using VS Code IDE. In your https://github.com//ansible-config-mgt GitHub repository, start a new branch and call it **dynamic-assignments**.
 
+
+Then while on the new branch, proceed to create a new directory and name it **dynamic-assignments**. While inside this directory, create a new file **env-vars.yml**. We will instruct **site.yml** to **include** this playbook later. For now, let us keep building up the structure.
 ```
 git status
 git pull
-git checkout -b dynamic-assignment
+git checkout -b dynamic-assignments
+mkdir dynamic-assignment
+cd dynamic-assignments/
+touch env-vars.yml
 ```
 
-Then while on the new branch, proceed to create a new directory and name it **dynamic-assignments**. While inside this directory, create a new file **env-vars.yml**. We will instruct **site.yml** to **include** this playbook later. For now, let us keep building up the structure.
 
 We will be using the same Ansible to configure multiple environments and each of these environments will have certain unique attributes, such as servername and ip-address etc. We will set values to variables per specific environment.
 
@@ -60,8 +64,14 @@ Since we will be using the same Ansible to configure multiple environments, and 
 
 For this reason, we will now create a folder to keep each environment’s variables file. Therefore, create a new folder **env-vars**, then for each environment, create new **YAML** files which we will use to set variables.
 
-Below is how my layout  now look like...
+```
+cd env-vars
+touch dev.yml prod.yml stage.yml uat.yml
+```
 
+Below is how my layout  now look like after excution of above...
+
+![13_3](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/80870f77-d767-4315-b63a-6d2d49277b89)
 
 Now paste the instruction below into the **env-vars.yml** file.
 
@@ -83,6 +93,10 @@ Now paste the instruction below into the **env-vars.yml** file.
       tags:
         - always
 ```
+
+![13_1](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/8e526abe-e7ba-4dad-bbf3-4574e6b84979)
+
+
 
 ![13_2](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/419d6882-2b77-490b-9edf-d59eb74cada8)
 
@@ -107,6 +121,8 @@ We made use of a special variables **{ playbook_dir }** and **{ inventory_file }
 We are including the variables using a loop. 
 
 **with_first_found** implies that, looping through the list of files, the first one found is used. This is good so that we can always set default values in case an environment specific env file does not exist.
+
+
 
 ## STEP 2 - UPDATE SITE.YML WITH DYNAMIC ASSIGNMENTS
 
@@ -139,7 +155,11 @@ To preserve your GitHub in actual state after you install a new role – make a 
 
 Using below, We have to install git on Jenkins-Ansible server and then configure Visual Studio Code to work with this directory. Below tragets to create a new branch - **roles-feature** while connected to **ansible-config-mgt** directory
 
+Disconnect from the last folder `env-vars` folder and connect to the roles folder
+
 ```
+cd ..
+cd Roles
 git init
 git --version
 git pull https://github.com/EzeOnoky/ansible-config-mgt
@@ -148,8 +168,6 @@ git branch roles-feature
 git switch roles-feature
 git status
 ```
-
-# 13_2 success execution of above
 
 So for now, Jenkins jobs and webhook will no longer be needed in this project.
 
@@ -163,12 +181,14 @@ Rename the folder(geerlingguy.mysql) to mysql
 git status
 cd roles
 ls
-ansible-galaxy install geerlingguy.mysql
+sudo ansible-galaxy install geerlingguy.mysql
+ansible-galaxy init geerlingguy.mysql
 mv geerlinguy.mysql/ mysql
 ls
 ```
 
-# 13_3 success execution of above
+![13_4](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/bb121377-67ee-498a-97d7-77b093e91d2b)
+
 
 Read **README.md** file and edit roles configuration to use correct credentials for MySQL required for the tooling website, Edit the **defaults/main.yml** in the **mysql** role
 
