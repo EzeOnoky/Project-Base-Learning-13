@@ -65,6 +65,7 @@ Since we will be using the same Ansible to configure multiple environments, and 
 For this reason, we will now create a folder to keep each environment’s variables file. Therefore, create a new folder **env-vars**, then for each environment, create new **YAML** files which we will use to set variables.
 
 ```
+mkdir env-vars
 cd env-vars
 touch dev.yml prod.yml stage.yml uat.yml
 ```
