@@ -3,11 +3,12 @@ ANSIBLE DYNAMIC ASSIGNMENTS (INCLUDE) AND COMMUNITY ROLES
 
 ## PROJECT TASK
 
-- In this project we will introduce **dynamic assignments** by using Ansible **include** module. Our target is to use Ansible configuration management tool to prepare UAT environment for Tooling web solution.
+- In this project we will introduce **dynamic assignments** by using Ansible **include** module. Our target is to use Ansible configuration management tool to prepare UAT environment for Tooling web solution. Last 2 projects have already equipped you with some knowledge and skills on Ansible, so you can perform configurations using `playbooks` , `roles` and `imports`. Now you will continue configuring your UAT servers, learning and practicing new Ansible concepts and modules.
 
 ## BACKGROUND KNOWLEDGE
 
-**Ansible** is a popular open-source configuration management and automation tool that is used for various IT tasks such as *configuration management*, *application deployment*, and *orchestration*. One of the key features of Ansible is its ability to use variables to store and manipulate data. These variables can be defined in various ways and can be used to perform *dynamic assignments* in ansible playbooks.
+**Ansible** is a popular open-source configuration management and automation tool that is used for various IT tasks such as *configuration management*, *application deployment*, and *orchestration*. One of the key features of Ansible is its ability to use variables to store and manipulate data. These variables can be defined in various ways and can be used to perform *dynamic assignments* in ansible playbooks. Visit [Ansible Documentation](https://docs.ansible.com/) page to learn  latest updates on modules and their usage.
+
 
 **Dynamic assignments** in ansible refer to the use of variables whose values are calculated or determined at runtime. This is in contrast to static assignments. This project will focus on use of dynamic assigments
 
@@ -15,7 +16,7 @@ ANSIBLE DYNAMIC ASSIGNMENTS (INCLUDE) AND COMMUNITY ROLES
 
 There are several ways to perform dynamic assignments in ansible. Some of the common methods are:
 
-- **Using conditionals** : Conditionals in ansible allow you to specify a block of tasks that should be executed only if a certain condition is met. For example, you can use the when clause to specify a condition under which a task should be executed.
+- **Using conditionals** : Conditionals in ansible allows you to specify a block of tasks that should be executed only if a certain condition is met. For example, you can use the when clause to specify a condition under which a task should be executed.
 
 - **Using loops** : Loops in ansible allow you to repeat a set of tasks for a given number of times or for each item in a list. You can use loops to perform dynamic assignments by looping over a list of items and assigning a value to a variable for each iteration.
 
@@ -52,10 +53,14 @@ Then while on the new branch, proceed to create a new directory and name it **dy
 git status
 git pull
 git checkout -b dynamic-assignments
-mkdir dynamic-assignment
+mkdir dynamic-assignments
 cd dynamic-assignments/
 touch env-vars.yml
 ```
+![13_1](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/3c51c29d-e744-4ae6-bd0c-fe24a7059d35)
+
+
+![13_2](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/2b791509-c3c9-487a-94ea-b2fed6a675bf)
 
 
 We will be using the same Ansible to configure multiple environments and each of these environments will have certain unique attributes, such as servername and ip-address etc. We will set values to variables per specific environment.
@@ -69,6 +74,8 @@ mkdir env-vars
 cd env-vars
 touch dev.yml prod.yml stage.yml uat.yml
 ```
+![13_2a](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/82866ce5-625a-494f-9fd0-53fb05d641a9)
+
 
 Below is how my layout  now look like after excution of above...
 
@@ -95,11 +102,7 @@ Now paste the instruction below into the **env-vars.yml** file.
         - always
 ```
 
-![13_1](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/8e526abe-e7ba-4dad-bbf3-4574e6b84979)
-
-
-
-![13_2](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/419d6882-2b77-490b-9edf-d59eb74cada8)
+![13_4](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/03b2558c-2c94-443b-8918-493f915236b0)
 
 
 N/B: We used **include_vars** module instead of **include**. This is because Ansible developers decided to separate different features of the module. From Ansible version 2.8, the include module is deprecated and variants of include*_ must be used. These are:
@@ -146,6 +149,23 @@ Update site.yml file to make use of the dynamic assignment with the snippet belo
 
 Above Explained...
 
+Now you need to commit all the recent changes done while on branch `dynamic-assignments` , push it to github repo - ansible-config-mgt, and merge it to the main branch.
+
+```
+git status
+git add .
+git commit -m "dynamic-assignments branch updates"
+git push origin dynamic-assignments
+```
+
+![13_5](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/8e212484-8a42-405c-8b76-2f98dedcaa7c)
+
+
+Merging to the main branch is confirmed OK..
+
+![13_6](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/59058e5c-e4f3-4621-b661-f0d6cac78f6c)
+
+
 ### 2A   - Download Mysql Ansible Role from Community Roles
 
 Now it is time to create a role for MySQL database – it should install the MySQL package, create a database and configure users. To avoid manually doing all these, we can download and install open-source roles. These roles are actually production ready, and dynamic to accomodate most of Linux flavours. With Ansible Galaxy again, we can simply download a ready to use ansible role, and keep going.
@@ -156,19 +176,26 @@ To preserve your GitHub in actual state after you install a new role – make a 
 
 Using below, We have to install git on Jenkins-Ansible server and then configure Visual Studio Code to work with this directory. Below tragets to create a new branch - **roles-feature** while connected to **ansible-config-mgt** directory
 
-Disconnect from the last folder `env-vars` folder and connect to the roles folder
+Now return to your Jenkin-Ansible SSH logon,
 
 ```
-cd ..
-cd Roles
 git init
 git --version
-git pull https://github.com/EzeOnoky/ansible-config-mgt
-git remote add origin https://github.com/EzeOnoky/ansible-config-mgt
+git pull
+git status
 git branch roles-feature
 git switch roles-feature
 git status
 ```
+
+Compare 1 & 2 below, and you will see that after the `git pull` ....the newly created folders in Step 1 & 2 are now updated on the Jenkins-Ansible server.
+
+
+![13_7](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/9aa314cd-a020-4e47-9329-550f40f505ae)
+
+
+![13_8](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/79c7b088-cdad-4157-ac69-07f382f486aa)
+
 
 So for now, Jenkins jobs and webhook will no longer be needed in this project.
 
@@ -182,18 +209,19 @@ Rename the folder(geerlingguy.mysql) to mysql
 git status
 cd roles
 ls
-sudo ansible-galaxy install geerlingguy.mysql
-ansible-galaxy init geerlingguy.mysql
+ansible-galaxy install geerlingguy.mysql
+mkdir mysql
 mv geerlinguy.mysql/ mysql
 ls
 ```
 
-![13_4](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/bb121377-67ee-498a-97d7-77b093e91d2b)
+![13_9](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/ae4788ec-0f1e-4320-87c3-7df1f8adcb79)
 
 
 Read **README.md** file and edit roles configuration to use correct credentials for MySQL required for the tooling website, Edit the **defaults/main.yml** in the **mysql** role
 
-# 13_4 refer to kebe/solo pictures
+![13_10](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/322022ab-2e99-4af5-bb9c-c18f61978e55)
+
 
 Create a **db.yml** file in the **static assignment** that will point to the **mysql** role
 
@@ -208,11 +236,15 @@ git commit -m "updated geerlinguy mysql role"
 git push --set-upstream origin roles-feature
 ```
 
+![13_11](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/232f076c-b149-4ae1-9b22-f601834d06ae)
+
+
 Make a commit and push the roles-feature branch and merge to main branch.
 
-# 13_6 refer to Solo pictures
-
 On the GITHUB repo, Create a **pull request** and merge to the **main** branch if we are satisfied with your codes.
+
+![13_12](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/650fd2a3-aa6d-4c8e-877f-f96c185fd031)
+
 
 
 ## STEP 3 -  LOAD BALANCER ROLES
@@ -230,7 +262,6 @@ To proceed in creating the Ansible **role**, we can decide to either develop our
 
 Check [here](https://galaxy.ansible.com/geerlingguy) , search and Copy the link for the *Nginx* and *Apache* roles. 
 
-# 13_7 Showing geerlingguy site - refer solo pix
 
 Ensure you create the roles in the **roles** directory...Rename the newly download roles to **Nginx** and **Apache** respectively.
 
@@ -242,22 +273,22 @@ mv geerlingguy.nginx/ nginx
 mv geerlingguy.apache/ apache
 ```
 
-# 13_7 Showing successful execution - refer solo pix
+![13_13](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/7f1d7700-08cb-4419-9676-1513ae803810)
+
 
 ### 3B - Introduce Variables, Update static-assignment and site.yml files to refer the downloaded roles
 
-- 3B_1 : Since you cannot use both Nginx and Apache load balancer, you need to add a condition to enable either one – this is where you can make use of **variables**
+Since you cannot use both Nginx and Apache load balancer, you need to add a condition to enable either one – this is where you can make use of **variables**
 
-- 3B_2 : Inside the new Nginx and Apache roles, declare a variable in **defaults/main.yml** file . Name each variables **enable_nginx_lb** and **enable_apache_lb** respectively.
+- 3B_1 : Inside the new Nginx and Apache roles, declare a variable in **defaults/main.yml** file . Name each variables **enable_nginx_lb** and **enable_apache_lb** respectively. Set both values to false like this
 
-- 3B_3 : Set both values to false like this `enable_nginx_lb: false` and `enable_apache_lb: false`
+```
+enable_nginx_lb: false
+enable_apache_lb: false
+```
 
-- 3B_4 : Declare another variable in both roles `load_balancer_is_required` and set its value to false as well
+- 3B_2 : Declare another variable in both roles `load_balancer_is_required` and set its value to false as well
 
-- 3B_5 : Update both assignment and site.yml files respectively
-
-
-**3B_2, 3B_3, 3B_4, 3B_5 executed**
 ```
 enable_nginx_lb: false
 load_balancer_is_required: false
@@ -266,7 +297,21 @@ enable_apache_lb: false
 load_balancer_is_required: false
 ```
 
-# 13_8 Showing successful execution for both NGINX & APACHE - refer solo pix
+![13_14](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/c76472d5-ef4a-4c22-8acb-44de72372daa)
+
+Above is for Apache & Nginx roles
+
+I need to rest having stay awake for long, Below was done so save the works done so far...
+
+```
+git status
+git add .
+git commit -m "updated1 load balancer role"
+git push origin roles-feature
+```
+
+- 3B_5 : Update both static assignment and site.yml files respectively
+
 
 
 Also edit the defaults/main.yml files to capture private IP address of WEB1 & WEB2
