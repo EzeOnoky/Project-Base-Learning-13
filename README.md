@@ -298,19 +298,14 @@ load_balancer_is_required: false
 ```
 
 
-Also edit the defaults/main.yml files to capture private IP address of WEB1 & WEB2, check your jenkins-ansible server `cat /etc/hosts` for the list
+Also edit the defaults/main.yml files to capture private IP address of web1 & web2, check your jenkins-ansible server `cat /etc/hosts` for the list
 
-![13_14](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/5e7fb671-d5c8-4b3f-8f48-d7c4f0592270)
+Below is for Nginx roles - **defaults/main.yml**, NOTE **nginx_extra_http_options:** which was previous commented out, was uncommented., and also for Apache roles - **defaults/main.yml**
 
-Above is for Nginx roles - **defaults/main.yml**, NOTE **nginx_extra_http_options:** which was previous commented out, was uncommented.
-
-
-![13_15](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/d0f12c33-c8b7-447a-b708-73a05aedd10b)
-
-Above is for Nginx roles - **defaults/main.yml**
+![13_15](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/2b42812c-f62f-45a9-b299-e88289b357e0)
 
 
-- 3B_5 : Update both static assignment and site.yml files respectively
+- 3B_3 : Update both static assignment and site.yml files respectively
 
 Now we proceed to update both `static-assignments` directory with a new file - **loadbalancers.yml** and also update the `site.yml` files respectively
 
