@@ -297,26 +297,20 @@ enable_apache_lb: false
 load_balancer_is_required: false
 ```
 
-![13_14](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/c76472d5-ef4a-4c22-8acb-44de72372daa)
 
-Above is for Apache & Nginx roles
+Also edit the defaults/main.yml files to capture private IP address of WEB1 & WEB2, check your jenkins-ansible server `cat /etc/hosts` for the list
 
-I need to rest having stay awake for long, Below was done so save the works done so far...
+![13_14](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/5e7fb671-d5c8-4b3f-8f48-d7c4f0592270)
 
-```
-git status
-git add .
-git commit -m "updated1 load balancer role"
-git push origin roles-feature
-```
+Above is for Nginx roles - **defaults/main.yml**, NOTE **nginx_extra_http_options:** which was previous commented out, was uncommented.
+
+
+![13_15](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/d0f12c33-c8b7-447a-b708-73a05aedd10b)
+
+Above is for Nginx roles - **defaults/main.yml**
+
 
 - 3B_5 : Update both static assignment and site.yml files respectively
-
-
-
-Also edit the defaults/main.yml files to capture private IP address of WEB1 & WEB2
-
-# 13_9 - refer solo/KEBE pix to understand
 
 Now we proceed to update both `static-assignments` directory with a new file - **loadbalancers.yml** and also update the `site.yml` files respectively
 
@@ -329,8 +323,6 @@ In the **static assignments** directory, create a file **loadbalancers.yml** fil
     - { role: apache, when: enable_apache_lb and load_balancer_is_required }
 ```
 
-# 13_10 - pix showing above is done, refer solo pix to understand
-
 As seen above, with the `when` condition, It is used to decide the nature of load balancer installed in an environment depending on which variables is set to true. Recall the variables introduced in **3B_2** above.
 
 Then update the **playbooks/sites.yml** file with below snippet
@@ -341,7 +333,8 @@ Then update the **playbooks/sites.yml** file with below snippet
       when: load_balancer_is_required
 ```
 
-# 13_11 - pix showing above is done, refer solo/kebe pix to understand
+![13_16](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/39b8b022-ded2-4fec-b9f9-4f497998ab82)
+
 
 Now you can make use of **env-vars\uat.yml** file to define which loadbalancer to use in UAT environment by setting respective environmental variable to `true`
 
@@ -352,31 +345,38 @@ enable_nginx_lb: true
 load_balancer_is_required: true
 ```
 
-# 13_12 - pix showing above is done, refer Kebe pix to understand
-
 The same must work with apache LB, so you can switch it by setting respective environmental variable to **true** and other to **false**
+
+![13_17](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/2d220b72-b324-4e1d-b879-bd58b6276e46)
+
 
 Now when the nginx server is set to run, it skips all the plays on apache server and vice versa. We are using the same port address, port 80, so remember to stop the service of either nginx when you want to run apache load balancer and vice versa.
 
-
 Then we update the **inventory/uat.yml**
 
-# 13_13 - pix showing above is done, refer solo pix to understand
+![13_18](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/bdfe38f0-b068-4a81-8655-dd57f30e0c6c)
+
+```
+ssh ec2-user@172.31.41.85
+ssh ec2-user@172.31.37.3
+ssh ec2-user@172.31.37.56
+ssh ubuntu@172.31.34.225
+```
 
 Check if the ansible can access the inventory
 
 `ansible all -m ping -i inventory/uat.yml`
 
-# 13_13 - pix showing above is done, refer solo pix to understand
+![13_19](https://github.com/EzeOnoky/Project-Base-Learning-13/assets/122687798/190097a6-af47-4e12-aafc-39915bb5a2c4)
 
 
-Push the **dynamic assignment** branch and merge
+Push the **roles-feature** branch and merge to the main branch
 
 ```
 git status
 git add .
-git comit -m "add env-vars,dynamic assignments and update site.yml"
-git push origin dynamic-assignment
+git commit -m "final changes on role-features branch 1"
+git push origin roles-feature
 ```
 
 # 13_14 - pix showing above is done, refer solo pix to understand
@@ -407,3 +407,5 @@ Notice how it skips all nginx plays, this is because apache2 load balancer is ac
 In both scenarios, the web server was reachable on same port because i always stopped the service first on the play before i switched to a new service
 
 # Congratulation EZE, you have -----
+
+
